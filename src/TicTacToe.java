@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class TicTacToe {
@@ -46,7 +47,22 @@ public class TicTacToe {
     private static void initializeBoard() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the dimension of Board (e.g., 3 for 3x3): ");
-        int dimension = scanner.nextInt();
+        int dimension;
+
+        while (true) {
+            try {
+                dimension = scanner.nextInt();
+                if (dimension < 3) {
+                    System.out.println("Dimension should be at least 3. Please enter again: ");
+                } else {
+                    break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid integer: ");
+                scanner.next();
+            }
+        }
+
 
         board = new char[dimension][dimension];
         for (int i = 0; i < dimension; i++) {
@@ -89,13 +105,25 @@ public class TicTacToe {
     // player's move
     private static void makeMove() {
         Scanner scanner = new Scanner(System.in);
-        int row, col;
-        do {
-            System.out.print(playerName() + " Enter column number (0, 1, 2): ");
-            row = scanner.nextInt();
-            System.out.print(playerName() + " Enter column number (0, 1, 2): ");
-            col = scanner.nextInt();
-        } while (row < 0 || row >= 3 || col < 0 || col >= 3 || board[row][col] != ' ');
+        int row;
+        int col;
+        while (true) {
+            try {
+                System.out.print(playerName() + ", Enter row number (0, 1, ..., " + (board.length - 1) + "): ");
+                row = scanner.nextInt();
+                System.out.print(playerName() + ", Enter column number (0, 1, ..., " + (board.length - 1) + "): ");
+                col = scanner.nextInt();
+
+                if (row < 0 || row >= board.length || col < 0 || col >= board.length || board[row][col] != ' ') {
+                    System.out.println("Invalid move. Please enter valid coordinates.");
+                } else {
+                    break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter valid integers.");
+                scanner.next();
+            }
+        }
         board[row][col] = currentPlayer;
     }
 
